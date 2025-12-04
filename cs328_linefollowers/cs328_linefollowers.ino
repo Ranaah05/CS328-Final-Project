@@ -48,26 +48,32 @@ void loop() {
   int center = digitalRead(LT_CENTER);
   int right  = digitalRead(LT_RIGHT);
 
-  // CENTER = 0 means on line
-  if (center == 0) {
-    forward(speed, speed);  // straight
+  // 0 = sensing the black line
+
+  // Perfectly centered
+  if (center == 0 && left == 1 && right == 1) {
+    forward(speed, speed);
   }
-  else if (left == 0) {
-    forward(adjustspeed, speed); // slow left motor → turn left
+  // Slight left 
+  else if (left == 0 && center == 0) {
+    forward(adjustspeed, speed);
   }
-  else if (right == 0) {
-    forward(speed, adjustspeed); // slow right motor → turn right
+  // Slight right 
+  else if (right == 0 && center == 0) {
+    forward(speed, adjustspeed);
   }
-  else if (left == 0 && center == 1) {
-    forward(heavy, speed);        // heavy left correction
+  // Hard left correction
+  else if (left == 0 && center == 1 && right == 1) {
+    forward(heavy, speed);
   }
-  else if (right == 0 && center == 1) {
-    forward(speed, heavy);        // heavy right correction
-}
+  // Hard right correction
+  else if (right == 0 && center == 1 && left == 1) {
+    forward(speed, heavy);
+  }
+  // Lost line (all 1)
   else {
     stopMotors();
   }
-}
 
 void forward(int speedA, int speedB) {
   analogWrite(MotorPWM_A, speedA);
